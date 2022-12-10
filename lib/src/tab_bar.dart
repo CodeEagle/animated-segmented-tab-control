@@ -15,6 +15,7 @@ class SegmentedTabControl extends StatefulWidget
     this.height = 46,
     required this.tabs,
     this.controller,
+    this.userInteractioncController,
     this.backgroundColor,
     this.backgroundGradientColor,
     this.tabTextColor,
@@ -42,9 +43,12 @@ class SegmentedTabControl extends StatefulWidget
   /// Can be provided by [DefaultTabController].
   final TabController? controller;
 
+  /// only pass value that is trigger by user interaction
+  final ValueNotifier<int>? userInteractioncController;
+
   /// The color of the area beyond the indicator.
-  final Color? backgroundColor;  
-    
+  final Color? backgroundColor;
+
   /// A gradient to use when filling the box.
   ///
   /// If this is specified, [backgroundColor] has no effect.
@@ -62,7 +66,7 @@ class SegmentedTabControl extends StatefulWidget
 
   /// Color of the indicator.
   final Color? indicatorColor;
-   
+
   /// A gradient to use when filling the box.
   ///
   /// If this is specified, [indicatorColor] has no effect.
@@ -371,6 +375,7 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
     }
     return (int index) => () {
           _internalAnimationController.stop();
+          widget.userInteractioncController?.value = index;
           _controller!.animateTo(index);
         };
   }
