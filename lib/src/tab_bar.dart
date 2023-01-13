@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 
@@ -8,8 +9,7 @@ import 'utils/custom_clippers.dart';
 ///
 /// Requires [TabController], witch can be read from [context] with
 /// [DefaultTabController] using. Or you can provide controller in the constructor.
-class SegmentedTabControl extends StatefulWidget
-    implements PreferredSizeWidget {
+class SegmentedTabControl extends StatefulWidget implements PreferredSizeWidget {
   const SegmentedTabControl({
     Key? key,
     this.height = 46,
@@ -44,7 +44,7 @@ class SegmentedTabControl extends StatefulWidget
   final TabController? controller;
 
   /// only pass value that is trigger by user interaction
-  final ValueNotifier<int>? userInteractioncController;
+  final SGValueNotifier<int>? userInteractioncController;
 
   /// The color of the area beyond the indicator.
   final Color? backgroundColor;
@@ -107,8 +107,7 @@ class SegmentedTabControl extends StatefulWidget
   Size get preferredSize => Size.fromHeight(height);
 }
 
-class _SegmentedTabControlState extends State<SegmentedTabControl>
-    with SingleTickerProviderStateMixin {
+class _SegmentedTabControlState extends State<SegmentedTabControl> with SingleTickerProviderStateMixin {
   EdgeInsets _currentTilePadding = EdgeInsets.zero;
   Alignment _currentIndicatorAlignment = Alignment.centerLeft;
   late AnimationController _internalAnimationController;
@@ -146,8 +145,7 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
   bool get _controllerIsValid => _controller?.animation != null;
 
   void _updateTabController() {
-    final TabController? newController =
-        widget.controller ?? DefaultTabController.of(context);
+    final TabController? newController = widget.controller ?? DefaultTabController.of(context);
     assert(() {
       if (newController == null) {
         throw FlutterError(
@@ -189,8 +187,7 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
     _controller!.index = _internalIndex;
   }
 
-  TickerFuture _animateIndicatorToNearest(
-      Offset pixelsPerSecond, double width) {
+  TickerFuture _animateIndicatorToNearest(Offset pixelsPerSecond, double width) {
     final nearest = _internalIndex;
     final target = _animationValueToAlignment(nearest.toDouble());
     _internalAnimation = _internalAnimationController.drive(AlignmentTween(
@@ -232,8 +229,7 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
 
   int get _internalIndex => _alignmentToIndex(_currentIndicatorAlignment);
   int _alignmentToIndex(Alignment alignment) {
-    final currentPosition =
-        (_controller!.length - 1) * _xToPercentsCoefficient(alignment);
+    final currentPosition = (_controller!.length - 1) * _xToPercentsCoefficient(alignment);
     return currentPosition.round();
   }
 
@@ -246,33 +242,23 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
   Widget build(BuildContext context) {
     final currentTab = widget.tabs[_internalIndex];
 
-    final textStyle =
-        widget.textStyle ?? Theme.of(context).textTheme.bodyText2!;
+    final textStyle = widget.textStyle ?? Theme.of(context).textTheme.bodyText2!;
 
-    final selectedTabTextColor = currentTab.selectedTextColor ??
-        widget.selectedTabTextColor ??
-        Colors.white;
+    final selectedTabTextColor = currentTab.selectedTextColor ?? widget.selectedTabTextColor ?? Colors.white;
 
-    final tabTextColor = currentTab.textColor ??
-        widget.tabTextColor ??
-        Colors.white.withOpacity(0.7);
+    final tabTextColor = currentTab.textColor ?? widget.tabTextColor ?? Colors.white.withOpacity(0.7);
 
-    final backgroundColor = currentTab.backgroundColor ??
-        widget.backgroundColor ??
-        Theme.of(context).colorScheme.background;
+    final backgroundColor =
+        currentTab.backgroundColor ?? widget.backgroundColor ?? Theme.of(context).colorScheme.background;
 
-    final indicatorColor = currentTab.color ??
-        widget.indicatorColor ??
-        Theme.of(context).indicatorColor;
+    final indicatorColor = currentTab.color ?? widget.indicatorColor ?? Theme.of(context).indicatorColor;
 
     final borderRadius = BorderRadius.all(widget.radius);
 
     return DefaultTextStyle(
       style: widget.textStyle ?? DefaultTextStyle.of(context).style,
       child: LayoutBuilder(builder: (context, constraints) {
-        final indicatorWidth =
-            (constraints.maxWidth - widget.indicatorPadding.horizontal) /
-                _controller!.length;
+        final indicatorWidth = (constraints.maxWidth - widget.indicatorPadding.horizontal) / _controller!.length;
 
         return ClipRRect(
           borderRadius: BorderRadius.all(widget.radius),
@@ -317,8 +303,7 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
                         duration: kTabScrollDuration,
                         curve: Curves.ease,
                         width: indicatorWidth,
-                        height:
-                            widget.height - widget.indicatorPadding.vertical,
+                        height: widget.height - widget.indicatorPadding.vertical,
                         decoration: BoxDecoration(
                           color: indicatorColor,
                           gradient: widget.indicatorGradientColor,
@@ -336,13 +321,10 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
                       radius: widget.radius,
                       size: Size(
                         indicatorWidth,
-                        widget.height -
-                            widget.indicatorPadding.vertical -
-                            squeezePadding.vertical,
+                        widget.height - widget.indicatorPadding.vertical - squeezePadding.vertical,
                       ),
                       offset: Offset(
-                        _xToPercentsCoefficient(_currentIndicatorAlignment) *
-                            (constraints.maxWidth - indicatorWidth),
+                        _xToPercentsCoefficient(_currentIndicatorAlignment) * (constraints.maxWidth - indicatorWidth),
                         0,
                       ),
                     ),
@@ -387,8 +369,7 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
     return (details) {
       _internalAnimationController.stop();
       setState(() {
-        _currentTilePadding =
-            EdgeInsets.symmetric(vertical: widget.squeezeIntensity);
+        _currentTilePadding = EdgeInsets.symmetric(vertical: widget.squeezeIntensity);
       });
     };
   }
@@ -398,8 +379,7 @@ class _SegmentedTabControlState extends State<SegmentedTabControl>
       return null;
     }
     return (details) {
-      double x = _currentIndicatorAlignment.x +
-          details.delta.dx / (constraints.maxWidth / 2);
+      double x = _currentIndicatorAlignment.x + details.delta.dx / (constraints.maxWidth / 2);
       if (x < -1) {
         x = -1;
       } else if (x > 1) {
@@ -464,8 +444,7 @@ class _Labels extends StatelessWidget {
               width: width,
               child: InkWell(
                 splashColor: tab.splashColor ?? splashColor,
-                highlightColor:
-                    tab.splashHighlightColor ?? splashHighlightColor,
+                highlightColor: tab.splashHighlightColor ?? splashHighlightColor,
                 borderRadius: BorderRadius.all(radius),
                 onTap: callbackBuilder?.call(index),
                 child: Padding(
@@ -519,4 +498,25 @@ class _SqueezeAnimated extends StatelessWidget {
       ),
     );
   }
+}
+
+class SGValueNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
+  /// Creates a [ChangeNotifier] that wraps this value.
+  SGValueNotifier(this._value);
+
+  /// The current value stored in this notifier.
+  ///
+  /// When the value is replaced with something that is not equal to the old
+  /// value as evaluated by the equality operator ==, this class notifies its
+  /// listeners.
+  @override
+  T get value => _value;
+  T _value;
+  set value(T newValue) {
+    _value = newValue;
+    notifyListeners();
+  }
+
+  @override
+  String toString() => '${describeIdentity(this)}($value)';
 }
